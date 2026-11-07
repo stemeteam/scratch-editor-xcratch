@@ -99,4 +99,4 @@ class Scratch3STEMEdatalogger {
     }
 }
 
-Scratch.extensions.register(new Scratch3ESP32BLETwoWay());
+Scratch.extensions.register(new Scratch3STEMEdatalogger());
