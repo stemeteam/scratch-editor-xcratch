@@ -1,0 +1,32 @@
+{
+    "include": ["src"],
+    "compilerOptions": {
+        /* Visit https://aka.ms to read more about this file */
+
+        /* Language and Environment */
+        "target": "ESNext",
+        "jsx": "react",
+
+        /* Modules */
+        "module": "commonjs",
+        "types": ["./src/types.d.ts"],
+
+        /* Emit */
+        "rootDir": "./src", // BẮT BUỘC để fix lỗi bố cục layout file trên TS 6.0+
+        "declaration": true,
+        "sourceMap": true,
+        "outDir": "./dist/", // Thư mục chứa các file .js sau khi biên dịch
+        "declarationDir": "./dist/types/", // Thư mục tách riêng chứa các file định nghĩa .d.ts
+
+        /* Interop Constraints */
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+
+        /* Type Checking */
+        "strict": true,
+        "noImplicitAny": false,
+
+        /* Completeness */
+        "skipLibCheck": true
+    }
+}

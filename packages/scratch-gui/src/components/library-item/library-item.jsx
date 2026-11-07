@@ -1,0 +1,298 @@
+import {FormattedMessage} from 'react-intl';
+import PropTypes from 'prop-types';
+import bindAll from 'lodash.bindall';
+import React from 'react';
+
+import Box from '../box/box.jsx';
+import ScratchImage from '../scratch-image/scratch-image.jsx';
+import PlayButton from '../../containers/play-button.jsx';
+import styles from './library-item.css';
+import './library-item.raw.css';
+import classNames from 'classnames';
+
+import bluetoothIconURL from './bluetooth.svg';
+import internetConnectionIconURL from './internet-connection.svg';
+
+import {PLATFORM} from '../../lib/platform.js';
+
+ 
+class LibraryItemComponent extends React.PureComponent {
+    constructor (props) {
+        super(props);
+        bindAll(this, [
+            'renderImage',
+            'handleLinkClick',
+            'handleExtensionUrlClick'
+        ]);
+        this.state = {
+            urlCopied: false,
+            tooltipX: 0,
+            tooltipY: 0
+        };
+        this.tooltipRef = React.createRef();
+    }
+    handleLinkClick (e) {
+        // リンクのクリックイベントが親要素に伝播しないようにする
+        e.stopPropagation();
+    }
+    handleExtensionUrlClick (e) {
+        // リンクのクリックイベントが親要素に伝播しないようにする
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // マウスの位置を取得
+        const x = e.clientX;
+        const y = e.clientY;
+        
+        // URLをクリップボードにコピー
+        if (this.props.extensionURL) {
+            navigator.clipboard.writeText(this.props.extensionURL)
+                .then(() => {
+                    // コピー成功のフィードバックを表示
+                    this.setState({
+                        urlCopied: true,
+                        tooltipX: x,
+                        tooltipY: y
+                    });
+                    // 2秒後にフィードバックを消す
+                    setTimeout(() => {
+                        this.setState({urlCopied: false});
+                    }, 2000);
+                })
+                .catch(err => {
+                    // eslint-disable-next-line no-console
+                    console.error('Failed to copy extension URL:', err);
+                });
+        }
+    }
+    renderImage (className, imageSource) {
+        // Scratch Android and Scratch Desktop assume the user is offline and has
+        // local access to the image assets. In those cases we use the `ScratchImage`
+        // component which loads the local assets by using a queue. In Scratch Web
+        // we don't have the assets locally and want to directly download them from
+        // the assets service.
+        // TODO: Abstract this logic in the `ScratchImage` component itself.
+        const url = imageSource.uri ?? imageSource.assetServiceUri;
+
+        if (this.props.platform === PLATFORM.ANDROID ||
+            this.props.platform === PLATFORM.DESKTOP) {
+            return (<ScratchImage
+                className={className}
+                imageSource={imageSource}
+            />);
+        }
+        return (<img
+            className={className}
+            src={url}
+        />);
+    }
+    render () {
+        return this.props.featured ? (
+            <div
+                id={this.props.extensionId}
+                className={classNames(
+                    styles.libraryItem,
+                    styles.featuredItem,
+                    {
+                        [styles.disabled]: this.props.disabled
+                    },
+                    this.props.extensionId ? styles.libraryItemExtension : null,
+                    this.props.hidden ? styles.hidden : null,
+                    this.props.showItemCallout ? styles.radiate : null
+                )}
+                onClick={this.props.onClick}
+            >
+                <div className={styles.contentWrapper}>
+                    <div className={styles.featuredImageContainer}>
+                        {this.props.disabled ? (
+                            <div className={styles.comingSoonText}>
+                                <FormattedMessage
+                                    defaultMessage="Coming Soon"
+                                    description="Label for extensions that are not yet implemented"
+                                    id="gui.extensionLibrary.comingSoon"
+                                />
+                            </div>
+                        ) : null}
+                        {this.props.iconSource ? (
+                            this.renderImage(styles.featuredImage, this.props.iconSource)
+                        ) : null}
+                    </div>
+                    {this.props.insetIconURL ? (
+                        <div className={styles.libraryItemInsetImageContainer}>
+                            <img
+                                className={styles.libraryItemInsetImage}
+                                src={this.props.insetIconURL}
+                            />
+                        </div>
+                    ) : null}
+                    <div
+                        className={this.props.extensionId ?
+                            classNames(styles.featuredExtensionText, styles.featuredText) : styles.featuredText
+                        }
+                    >
+                        <span className={styles.libraryItemName}>{this.props.name}</span>
+                        <br />
+                        <span className={styles.featuredDescription}>{this.props.description}</span>
+                    </div>
+                    {this.props.helpLink ? (
+                        <div>
+                            <span className={styles.featuredExtensionHelp}>
+                                <a
+                                    href={this.props.helpLink}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    onClick={this.handleLinkClick}
+                                >{'👉 Help Link'}</a></span>
+                        </div>
+                    ) : null}
+                    {this.props.extensionURL ? (
+                        <div>
+                            <span className={styles.featuredExtensionUrl}>
+                                {'Module: '}
+                                <a
+                                    href={this.props.extensionURL}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    onClick={this.handleExtensionUrlClick}
+                                >{this.props.extensionURL}</a>
+                            </span>
+                            <span
+                                ref={this.tooltipRef}
+                                className={classNames(styles.copyTooltip, {[styles.show]: this.state.urlCopied})}
+                                style={{
+                                    left: `${this.state.tooltipX}px`,
+                                    top: `${this.state.tooltipY}px`
+                                }}
+                            >
+                                {'✓ Copied!'}
+                            </span>
+                        </div>
+                    ) : null}
+                    {this.props.bluetoothRequired ||
+                        this.props.internetConnectionRequired || this.props.collaborator ? (
+                            <div className={styles.featuredExtensionMetadata}>
+                                <div className={styles.featuredExtensionRequirement}>
+                                    {this.props.bluetoothRequired || this.props.internetConnectionRequired ? (
+                                        <div>
+                                            <div>
+                                                <FormattedMessage
+                                                    defaultMessage="Requires"
+                                                    description="Label for extension hardware requirements"
+                                                    id="gui.extensionLibrary.requires"
+                                                />
+                                            </div>
+                                            <div
+                                                className={styles.featuredExtensionMetadataDetail}
+                                            >
+                                                {this.props.bluetoothRequired ? (
+                                                    <img src={bluetoothIconURL} />
+                                                ) : null}
+                                                {this.props.internetConnectionRequired ? (
+                                                    <img src={internetConnectionIconURL} />
+                                                ) : null}
+                                            </div>
+                                        </div>
+                                    ) : null}
+                                </div>
+                                <div className={styles.featuredExtensionCollaboration}>
+                                    {this.props.collaborator ? (
+                                        <div>
+                                            <div>
+                                                <FormattedMessage
+                                                    defaultMessage="Collaboration with"
+                                                    description="Label for extension collaboration"
+                                                    id="gui.extensionLibrary.collaboration"
+                                                />
+                                            </div>
+                                            <div
+                                                className={styles.featuredExtensionMetadataDetail}
+                                            >
+                                                {this.props.collaborator}
+                                            </div>
+                                        </div>
+                                    ) : null}
+                                </div>
+                            </div>
+                        ) : null}
+                </div>
+            </div>
+        ) : (
+            <Box
+                className={classNames(
+                    styles.libraryItem, {
+                        [styles.hidden]: this.props.hidden
+                    }
+                )}
+                role="button"
+                tabIndex="0"
+                onBlur={this.props.onBlur}
+                onClick={this.props.onClick}
+                onFocus={this.props.onFocus}
+                onKeyPress={this.props.onKeyPress}
+                onMouseEnter={this.props.showPlayButton ? null : this.props.onMouseEnter}
+                onMouseLeave={this.props.showPlayButton ? null : this.props.onMouseLeave}
+            >
+                {/* Layers of wrapping is to prevent layout thrashing on animation */}
+                <Box className={styles.libraryItemImageContainerWrapper}>
+                    <Box
+                        className={styles.libraryItemImageContainer}
+                        onMouseEnter={this.props.showPlayButton ? this.props.onMouseEnter : null}
+                        onMouseLeave={this.props.showPlayButton ? this.props.onMouseLeave : null}
+                    >
+                        {this.renderImage(styles.libraryItemImage, this.props.iconSource)}
+                    </Box>
+                </Box>
+                <span className={styles.libraryItemName}>{this.props.name}</span>
+                {this.props.showPlayButton ? (
+                    <PlayButton
+                        isPlaying={this.props.isPlaying}
+                        onPlay={this.props.onPlay}
+                        onStop={this.props.onStop}
+                    />
+                ) : null}
+            </Box>
+        );
+    }
+}
+
+
+LibraryItemComponent.propTypes = {
+    bluetoothRequired: PropTypes.bool,
+    collaborator: PropTypes.string,
+    description: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.node
+    ]),
+    disabled: PropTypes.bool,
+    extensionId: PropTypes.string,
+    extensionURL: PropTypes.string,
+    featured: PropTypes.bool,
+    helpLink: PropTypes.string,
+    hidden: PropTypes.bool,
+    iconSource: ScratchImage.ImageSourcePropType,
+    insetIconURL: PropTypes.string,
+    internetConnectionRequired: PropTypes.bool,
+    isPlaying: PropTypes.bool,
+    name: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.node
+    ]),
+    onBlur: PropTypes.func.isRequired,
+    onClick: PropTypes.func.isRequired,
+    onFocus: PropTypes.func.isRequired,
+    onKeyPress: PropTypes.func.isRequired,
+    onMouseEnter: PropTypes.func.isRequired,
+    onMouseLeave: PropTypes.func.isRequired,
+    onPlay: PropTypes.func.isRequired,
+    onStop: PropTypes.func.isRequired,
+    platform: PropTypes.oneOf(Object.keys(PLATFORM)),
+    showPlayButton: PropTypes.bool,
+    showItemCallout: PropTypes.bool
+};
+
+LibraryItemComponent.defaultProps = {
+    disabled: false,
+    showPlayButton: false
+};
+
+export default LibraryItemComponent;

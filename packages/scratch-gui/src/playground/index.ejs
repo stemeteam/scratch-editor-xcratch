@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% if (htmlWebpackPlugin.options.gtm_id) { %>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl+'<%= htmlWebpackPlugin.options.gtm_env_auth %>';
+        f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','<%- htmlWebpackPlugin.options.gtm_id %>');
+    </script>
+    <!-- End Google Tag Manager -->
+    <% } %>
+    <script>
+      if ('serviceWorker' in navigator) {
+        // Skip Service Worker on the webpack-dev-server. The dev build does
+        // not ship a service worker, but a stale registration from a previous
+        // production visit on the same host would trigger 'controllerchange'
+        // and reload the page in a loop (see git: "reload page on service
+        // worker controller change"). Unregister any leftovers and drop
+        // their caches so the editor can load normally.
+        var isLocalDev = location.hostname === 'localhost'
+          || location.hostname === '127.0.0.1'
+          || location.hostname === '0.0.0.0'
+          || location.port === '8601';
+
+        if (isLocalDev) {
+          navigator.serviceWorker.getRegistrations().then(function (regs) {
+            regs.forEach(function (r) { r.unregister(); });
+          }).catch(function () { /* noop */ });
+          if (window.caches && caches.keys) {
+            caches.keys().then(function (keys) {
+              keys.forEach(function (k) { caches.delete(k); });
+            }).catch(function () { /* noop */ });
+          }
+        } else {
+          window.addEventListener('load', function () {
+            navigator.serviceWorker.register('./service-worker.js', { updateViaCache: 'none' }).then(function (registration) {
+              console.log('PWA worker registration successful', registration.scope);
+            }, function (err) {
+              console.log('PWA worker registration failed', err);
+            }).catch(function (err) {
+              console.log(err);
+            });
+          });
+
+          // Reload only when an existing Service Worker is already in control
+          // (i.e. on a repeat visit) so a newly activated SW takes effect.
+          // On the first registration the initial 'controllerchange' fired by
+          // clients.claim() would otherwise cause an unwanted reload, so skip
+          // adding the listener when there is no controller yet.
+          if (navigator.serviceWorker.controller) {
+            var refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', function () {
+              if (refreshing) return;
+              refreshing = true;
+              window.location.reload();
+            });
+          }
+        }
+      } else {
+        console.log('Service Worker is not supported by browser.');
+      }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google" value="notranslate">
+    <link rel="shortcut icon" href="static/favicon.ico">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body>
+    <!--
+      Scratch Link Safari helpers (Scratch Link for Safari, Scrub on iPad, ...) look for this element
+      when the page has been loaded. The VM creates it too, but too late because it is instantiated
+      while rendering asynchronously, so the element has to be in the static HTML.
+    -->
+    <script id="scratch-link-extension-script"></script>
+    <% if (htmlWebpackPlugin.options.gtm_id) { %>
+      <!-- Google Tag Manager (noscript) -->
+      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<%- htmlWebpackPlugin.options.gtm_id %><%= htmlWebpackPlugin.options.gtm_env_auth %>" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+      <!-- End Google Tag Manager (noscript) -->
+    <% } %>
+  </body>
+</html>
