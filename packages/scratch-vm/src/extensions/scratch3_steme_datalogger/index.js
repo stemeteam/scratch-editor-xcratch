@@ -99,4 +99,6 @@ class Scratch3STEMEdatalogger {
     }
 }
 
+module.exports = Scratch3STEMEdatalogger;
+
 Scratch.extensions.register(new Scratch3STEMEdatalogger());
