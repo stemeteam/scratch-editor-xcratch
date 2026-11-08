@@ -1,55 +1,84 @@
-import React from 'react';
-import {FormattedMessage} from 'react-intl';
+import React from "react";
+import { FormattedMessage } from "react-intl";
 
-import musicIconURL from './music/music.png';
-import musicInsetIconURL from './music/music-small.svg';
+// import stemeDataloggerIconURL from "./stemeDatalogger/Steme_icon.png"; // Ảnh icon
+// import stemeDataloggerInsetIconURL from "./stemeDatalogger/Steme_icon.svg";
 
-import penIconURL from './pen/pen.png';
-import penInsetIconURL from './pen/pen-small.svg';
+import musicIconURL from "./music/music.png";
+import musicInsetIconURL from "./music/music-small.svg";
 
-import videoSensingIconURL from './videoSensing/video-sensing.png';
-import videoSensingInsetIconURL from './videoSensing/video-sensing-small.svg';
+import penIconURL from "./pen/pen.png";
+import penInsetIconURL from "./pen/pen-small.svg";
 
-import text2speechIconURL from './text2speech/text2speech.png';
-import text2speechInsetIconURL from './text2speech/text2speech-small.svg';
+import stemeDataloggerIconURL from "./stemeDatalogger/Steme_icon.png";
+import stemeDataloggerInsetIconURL from "./stemeDatalogger/Steme_icon.svg";
 
-import translateIconURL from './translate/translate.png';
-import translateInsetIconURL from './translate/translate-small.png';
+import videoSensingIconURL from "./videoSensing/video-sensing.png";
+import videoSensingInsetIconURL from "./videoSensing/video-sensing-small.svg";
 
-import makeymakeyIconURL from './makeymakey/makeymakey.png';
-import makeymakeyInsetIconURL from './makeymakey/makeymakey-small.svg';
+import text2speechIconURL from "./text2speech/text2speech.png";
+import text2speechInsetIconURL from "./text2speech/text2speech-small.svg";
 
-import microbitIconURL from './microbit/microbit.png';
-import microbitInsetIconURL from './microbit/microbit-small.svg';
-import microbitConnectionIconURL from './microbit/microbit-illustration.svg';
-import microbitConnectionSmallIconURL from './microbit/microbit-small.svg';
+import translateIconURL from "./translate/translate.png";
+import translateInsetIconURL from "./translate/translate-small.png";
 
-import ev3IconURL from './ev3/ev3.png';
-import ev3InsetIconURL from './ev3/ev3-small.svg';
-import ev3ConnectionIconURL from './ev3/ev3-hub-illustration.svg';
-import ev3ConnectionSmallIconURL from './ev3/ev3-small.svg';
+import makeymakeyIconURL from "./makeymakey/makeymakey.png";
+import makeymakeyInsetIconURL from "./makeymakey/makeymakey-small.svg";
 
-import wedo2IconURL from './wedo2/wedo.png'; // TODO: Rename file names to match variable/prop names?
-import wedo2InsetIconURL from './wedo2/wedo-small.svg';
-import wedo2ConnectionIconURL from './wedo2/wedo-illustration.svg';
-import wedo2ConnectionSmallIconURL from './wedo2/wedo-small.svg';
-import wedo2ConnectionTipIconURL from './wedo2/wedo-button-illustration.svg';
+import microbitIconURL from "./microbit/microbit.png";
+import microbitInsetIconURL from "./microbit/microbit-small.svg";
+import microbitConnectionIconURL from "./microbit/microbit-illustration.svg";
+import microbitConnectionSmallIconURL from "./microbit/microbit-small.svg";
 
-import boostIconURL from './boost/boost.png';
-import boostInsetIconURL from './boost/boost-small.svg';
-import boostConnectionIconURL from './boost/boost-illustration.svg';
-import boostConnectionSmallIconURL from './boost/boost-small.svg';
-import boostConnectionTipIconURL from './boost/boost-button-illustration.svg';
+import ev3IconURL from "./ev3/ev3.png";
+import ev3InsetIconURL from "./ev3/ev3-small.svg";
+import ev3ConnectionIconURL from "./ev3/ev3-hub-illustration.svg";
+import ev3ConnectionSmallIconURL from "./ev3/ev3-small.svg";
 
-import gdxforIconURL from './gdxfor/gdxfor.png';
-import gdxforInsetIconURL from './gdxfor/gdxfor-small.svg';
-import gdxforConnectionIconURL from './gdxfor/gdxfor-illustration.svg';
-import gdxforConnectionSmallIconURL from './gdxfor/gdxfor-small.svg';
+import wedo2IconURL from "./wedo2/wedo.png"; // TODO: Rename file names to match variable/prop names?
+import wedo2InsetIconURL from "./wedo2/wedo-small.svg";
+import wedo2ConnectionIconURL from "./wedo2/wedo-illustration.svg";
+import wedo2ConnectionSmallIconURL from "./wedo2/wedo-small.svg";
+import wedo2ConnectionTipIconURL from "./wedo2/wedo-button-illustration.svg";
 
-import faceSensingIconURL from './faceSensing/faceSensing.png';
-import faceSensingInsetIconURL from './faceSensing/faceSensing-small.svg';
+import boostIconURL from "./boost/boost.png";
+import boostInsetIconURL from "./boost/boost-small.svg";
+import boostConnectionIconURL from "./boost/boost-illustration.svg";
+import boostConnectionSmallIconURL from "./boost/boost-small.svg";
+import boostConnectionTipIconURL from "./boost/boost-button-illustration.svg";
+
+import gdxforIconURL from "./gdxfor/gdxfor.png";
+import gdxforInsetIconURL from "./gdxfor/gdxfor-small.svg";
+import gdxforConnectionIconURL from "./gdxfor/gdxfor-illustration.svg";
+import gdxforConnectionSmallIconURL from "./gdxfor/gdxfor-small.svg";
+
+import faceSensingIconURL from "./faceSensing/faceSensing.png";
+import faceSensingInsetIconURL from "./faceSensing/faceSensing-small.svg";
 
 const extensions = [
+    {
+        name: "stemeDatalogger",
+        extensionId: "stemeDataloggerID",
+        collaborator: "steme",
+        iconURL: stemeDataloggerIconURL,
+        insetIconURL: stemeDataloggerInsetIconURL,
+        description: (
+            <FormattedMessage
+                defaultMessage="Connect your projects with the world."
+                description="Description for the 'micro:bit' extension"
+                id="gui.extension.microbit.description"
+            />
+        ),
+        tags: ["device", "hardware"],
+        featured: true,
+        disabled: false,
+        bluetoothRequired: true,
+        internetConnectionRequired: false,
+        launchPeripheralConnectionFlow: true,
+        useAutoScan: false,
+        connectionIconURL: stemeDataloggerIconURL,
+        connectionSmallIconURL: stemeDataloggerIconURL,
+    },
     {
         name: (
             <FormattedMessage
@@ -58,7 +87,7 @@ const extensions = [
                 id="gui.extension.music.name"
             />
         ),
-        extensionId: 'music',
+        extensionId: "music",
         iconURL: musicIconURL,
         insetIconURL: musicInsetIconURL,
         description: (
@@ -68,8 +97,8 @@ const extensions = [
                 id="gui.extension.music.description"
             />
         ),
-        tags: ['sound', 'music', 'audio'],
-        featured: true
+        tags: ["sound", "music", "audio"],
+        featured: true,
     },
     {
         name: (
@@ -79,7 +108,7 @@ const extensions = [
                 id="gui.extension.pen.name"
             />
         ),
-        extensionId: 'pen',
+        extensionId: "pen",
         iconURL: penIconURL,
         insetIconURL: penInsetIconURL,
         description: (
@@ -89,8 +118,8 @@ const extensions = [
                 id="gui.extension.pen.description"
             />
         ),
-        tags: ['image', 'pen'],
-        featured: true
+        tags: ["image", "pen"],
+        featured: true,
     },
     {
         name: (
@@ -100,7 +129,7 @@ const extensions = [
                 id="gui.extension.videosensing.name"
             />
         ),
-        extensionId: 'videoSensing',
+        extensionId: "videoSensing",
         iconURL: videoSensingIconURL,
         insetIconURL: videoSensingInsetIconURL,
         description: (
@@ -110,8 +139,8 @@ const extensions = [
                 id="gui.extension.videosensing.description"
             />
         ),
-        tags: ['image', 'video'],
-        featured: true
+        tags: ["image", "video"],
+        featured: true,
     },
     {
         name: (
@@ -121,7 +150,7 @@ const extensions = [
                 id="gui.extension.faceSensing.name"
             />
         ),
-        extensionId: 'faceSensing',
+        extensionId: "faceSensing",
         iconURL: faceSensingIconURL,
         insetIconURL: faceSensingInsetIconURL,
         description: (
@@ -131,8 +160,8 @@ const extensions = [
                 id="gui.extension.faceSensing.description"
             />
         ),
-        tags: ['image', 'video', 'ai', 'ml', 'machine learning', `vision`],
-        featured: true
+        tags: ["image", "video", "ai", "ml", "machine learning", `vision`],
+        featured: true,
     },
     {
         name: (
@@ -142,8 +171,8 @@ const extensions = [
                 id="gui.extension.text2speech.name"
             />
         ),
-        extensionId: 'text2speech',
-        collaborator: 'Amazon Web Services',
+        extensionId: "text2speech",
+        collaborator: "Amazon Web Services",
         iconURL: text2speechIconURL,
         insetIconURL: text2speechInsetIconURL,
         description: (
@@ -153,9 +182,9 @@ const extensions = [
                 id="gui.extension.text2speech.description"
             />
         ),
-        tags: ['sound', 'audio', 'speech', 'text'],
+        tags: ["sound", "audio", "speech", "text"],
         featured: true,
-        internetConnectionRequired: true
+        internetConnectionRequired: true,
     },
     {
         name: (
@@ -165,8 +194,8 @@ const extensions = [
                 id="gui.extension.translate.name"
             />
         ),
-        extensionId: 'translate',
-        collaborator: 'Google',
+        extensionId: "translate",
+        collaborator: "Google",
         iconURL: translateIconURL,
         insetIconURL: translateInsetIconURL,
         description: (
@@ -176,14 +205,14 @@ const extensions = [
                 id="gui.extension.translate.description"
             />
         ),
-        tags: ['text', 'translation', 'language'],
+        tags: ["text", "translation", "language"],
         featured: true,
-        internetConnectionRequired: true
+        internetConnectionRequired: true,
     },
     {
-        name: 'Makey Makey',
-        extensionId: 'makeymakey',
-        collaborator: 'JoyLabz',
+        name: "Makey Makey",
+        extensionId: "makeymakey",
+        collaborator: "JoyLabz",
         iconURL: makeymakeyIconURL,
         insetIconURL: makeymakeyInsetIconURL,
         description: (
@@ -193,13 +222,13 @@ const extensions = [
                 id="gui.extension.makeymakey.description"
             />
         ),
-        tags: ['device', 'hardware'],
-        featured: true
+        tags: ["device", "hardware"],
+        featured: true,
     },
     {
-        name: 'micro:bit',
-        extensionId: 'microbit',
-        collaborator: 'micro:bit',
+        name: "micro:bit",
+        extensionId: "microbit",
+        collaborator: "micro:bit",
         iconURL: microbitIconURL,
         insetIconURL: microbitInsetIconURL,
         description: (
@@ -209,7 +238,7 @@ const extensions = [
                 id="gui.extension.microbit.description"
             />
         ),
-        tags: ['device', 'hardware'],
+        tags: ["device", "hardware"],
         featured: true,
         disabled: false,
         bluetoothRequired: true,
@@ -239,12 +268,12 @@ const extensions = [
                 id="gui.extension.microbit.connectingMessage"
             />
         ),
-        helpLink: 'https://scratch.mit.edu/microbit'
+        helpLink: "https://scratch.mit.edu/microbit",
     },
     {
-        name: 'Go Direct Force & Acceleration',
-        extensionId: 'gdxfor',
-        collaborator: 'Vernier',
+        name: "Go Direct Force & Acceleration",
+        extensionId: "gdxfor",
+        collaborator: "Vernier",
         iconURL: gdxforIconURL,
         insetIconURL: gdxforInsetIconURL,
         description: (
@@ -254,7 +283,7 @@ const extensions = [
                 id="gui.extension.gdxfor.description"
             />
         ),
-        tags: ['device', 'hardware'],
+        tags: ["device", "hardware"],
         featured: true,
         disabled: false,
         bluetoothRequired: true,
@@ -284,12 +313,12 @@ const extensions = [
                 id="gui.extension.gdxfor.connectingMessage"
             />
         ),
-        helpLink: 'https://scratch.mit.edu/vernier'
+        helpLink: "https://scratch.mit.edu/vernier",
     },
     {
-        name: 'LEGO MINDSTORMS EV3',
-        extensionId: 'ev3',
-        collaborator: 'LEGO',
+        name: "LEGO MINDSTORMS EV3",
+        extensionId: "ev3",
+        collaborator: "LEGO",
         iconURL: ev3IconURL,
         insetIconURL: ev3InsetIconURL,
         description: (
@@ -299,7 +328,7 @@ const extensions = [
                 id="gui.extension.ev3.description"
             />
         ),
-        tags: ['device', 'hardware'],
+        tags: ["device", "hardware"],
         featured: true,
         disabled: false,
         bluetoothRequired: true,
@@ -329,12 +358,12 @@ const extensions = [
                 id="gui.extension.ev3.connectingMessage"
             />
         ),
-        helpLink: 'https://scratch.mit.edu/ev3'
+        helpLink: "https://scratch.mit.edu/ev3",
     },
     {
-        name: 'LEGO BOOST',
-        extensionId: 'boost',
-        collaborator: 'LEGO',
+        name: "LEGO BOOST",
+        extensionId: "boost",
+        collaborator: "LEGO",
         iconURL: boostIconURL,
         insetIconURL: boostInsetIconURL,
         description: (
@@ -344,7 +373,7 @@ const extensions = [
                 id="gui.extension.boost.description"
             />
         ),
-        tags: ['device', 'hardware'],
+        tags: ["device", "hardware"],
         featured: true,
         disabled: false,
         bluetoothRequired: true,
@@ -376,12 +405,12 @@ const extensions = [
                 id="gui.extension.boost.connectingMessage"
             />
         ),
-        helpLink: 'https://scratch.mit.edu/boost'
+        helpLink: "https://scratch.mit.edu/boost",
     },
     {
-        name: 'LEGO Education WeDo 2.0',
-        extensionId: 'wedo2',
-        collaborator: 'LEGO',
+        name: "LEGO Education WeDo 2.0",
+        extensionId: "wedo2",
+        collaborator: "LEGO",
         iconURL: wedo2IconURL,
         insetIconURL: wedo2InsetIconURL,
         description: (
@@ -391,7 +420,7 @@ const extensions = [
                 id="gui.extension.wedo2.description"
             />
         ),
-        tags: ['device', 'hardware'],
+        tags: ["device", "hardware"],
         featured: true,
         disabled: false,
         bluetoothRequired: true,
@@ -423,11 +452,11 @@ const extensions = [
                 id="gui.extension.wedo2.connectingMessage"
             />
         ),
-        helpLink: 'https://scratch.mit.edu/wedo'
-    }
+        helpLink: "https://scratch.mit.edu/wedo",
+    },
 ];
 
 export default extensions;
 
-import extensionLoader from './extensionLoader/index.jsx';
+import extensionLoader from "./extensionLoader/index.jsx";
 extensions.unshift(extensionLoader);

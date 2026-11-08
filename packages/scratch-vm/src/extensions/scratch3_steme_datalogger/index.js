@@ -1,104 +1,148 @@
-class Scratch3STEMEdatalogger {
-    constructor(runtime) {
-        this.runtime = runtime;
-        // Cấu hình các UUID tiêu chuẩn của Nordic NUS
-        this.serviceUUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
-        this.txCharacteristicUUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"; // Scratch -> ESP32
-        this.rxCharacteristicUUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"; // ESP32 -> Scratch
+import BlockType from "../../extension-support/block-type";
+import ArgumentType from "../../extension-support/argument-type";
+import Cast from "../../util/cast";
+import translations from "./translations.json";
+import blockIcon from "./Steme_icon.png";
 
-        this.device = null;
-        this.txCharacteristic = null;
-        this.latestReceivedData = ""; // Biến lưu trữ dữ liệu mới nhất từ ESP32
+/**
+ * Formatter which is used for translation.
+ * This will be replaced which is used in the runtime.
+ * @param {object} messageData - format-message object
+ * @returns {string} - message for the locale
+ */
+let formatMessage = (messageData) => messageData.default;
+
+/**
+ * Setup format-message for this extension.
+ */
+const setupTranslations = () => {
+    const localeSetup = formatMessage.setup();
+    if (localeSetup && localeSetup.translations[localeSetup.locale]) {
+        Object.assign(
+            localeSetup.translations[localeSetup.locale],
+            translations[localeSetup.locale],
+        );
+    }
+};
+
+const EXTENSION_ID = "stemeDataloggerID";
+
+/**
+ * URL to get this extension as a module.
+ * When it was loaded as a module, 'extensionURL' will be replaced a URL which is retrieved from.
+ * @type {string}
+ */
+let extensionURL =
+    "https://<<account>>.github.io/<<repo>>/dist/<<extensionID>>.mjs";
+
+/**
+ * Scratch 3.0 blocks for example of Xcratch.
+ */
+class StemeDataloggerBlocks {
+    /**
+     * A translation object which is used in this class.
+     * @param {FormatObject} formatter - translation object
+     */
+    static set formatMessage(formatter) {
+        formatMessage = formatter;
+        if (formatMessage) setupTranslations();
     }
 
+    /**
+     * @return {string} - the name of this extension.
+     */
+    static get EXTENSION_NAME() {
+        return formatMessage({
+            id: "stemeDataloggerID.name",
+            default: "stemeDatalogger",
+            description: "name of the extension",
+        });
+    }
+
+    /**
+     * @return {string} - the ID of this extension.
+     */
+    static get EXTENSION_ID() {
+        return EXTENSION_ID;
+    }
+
+    /**
+     * URL to get this extension.
+     * @type {string}
+     */
+    static get extensionURL() {
+        return extensionURL;
+    }
+
+    /**
+     * Set URL to get this extension.
+     * The extensionURL will be changed to the URL of the loading server.
+     * @param {string} url - URL
+     */
+    static set extensionURL(url) {
+        extensionURL = url;
+    }
+
+    /**
+     * Construct a set of blocks for <<extensionName>>.
+     * @param {Runtime} runtime - the Scratch 3.0 runtime.
+     */
+    constructor(runtime) {
+        /**
+         * The Scratch 3.0 runtime.
+         * @type {Runtime}
+         */
+        this.runtime = runtime;
+
+        if (runtime.formatMessage) {
+            // Replace 'formatMessage' to a formatter which is used in the runtime.
+            formatMessage = runtime.formatMessage;
+        }
+    }
+
+    /**
+     * @returns {object} metadata for this extension and its blocks.
+     */
     getInfo() {
+        setupTranslations();
         return {
-            id: "esp32bletwoway",
-            name: "ESP32 Song Hành",
+            id: ExtensionBlocks.EXTENSION_ID,
+            name: ExtensionBlocks.EXTENSION_NAME,
+            extensionURL: ExtensionBlocks.extensionURL,
+            blockIconURI: blockIcon,
+            showStatusButton: false,
             blocks: [
                 {
-                    opcode: "connectDevice",
-                    blockType: Scratch.BlockType.COMMAND,
-                    text: "Kết nối ESP32 Bluetooth",
-                },
-                {
-                    opcode: "sendData",
-                    blockType: Scratch.BlockType.COMMAND,
-                    text: "Gửi dữ liệu [TEXT] tới ESP32",
+                    opcode: "do-it",
+                    blockType: BlockType.REPORTER,
+                    blockAllThreads: false,
+                    text: formatMessage({
+                        id: "stemeDataloggerID.doIt",
+                        default: "do it [SCRIPT]",
+                        description: "execute javascript for example",
+                    }),
+                    func: "doIt",
                     arguments: {
-                        TEXT: {
-                            type: Scratch.ArgumentType.STRING,
-                            defaultValue: "ON",
+                        SCRIPT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "3 + 4",
                         },
                     },
                 },
-                {
-                    opcode: "getReceivedData",
-                    blockType: Scratch.BlockType.REPORTER,
-                    text: "Dữ liệu nhận từ ESP32",
-                },
             ],
+            menus: {},
         };
     }
 
-    connectDevice() {
-        return navigator.bluetooth
-            .requestDevice({
-                filters: [{ namePrefix: "ESP32_Scratch" }],
-                optionalServices: [this.serviceUUID],
-            })
-            .then((device) => {
-                this.device = device;
-                return device.gatt.connect();
-            })
-            .then((server) => server.getPrimaryService(this.serviceUUID))
-            .then((service) => {
-                // 1. Lấy kênh truyền dữ liệu ĐI (TX)
-                service
-                    .getCharacteristic(this.txCharacteristicUUID)
-                    .then((char) => {
-                        this.txCharacteristic = char;
-                    });
-
-                // 2. Lấy kênh nhận dữ liệu VỀ (RX) và bật Notify
-                return service.getCharacteristic(this.rxCharacteristicUUID);
-            })
-            .then((rxChar) => {
-                return rxChar.startNotifications().then(() => {
-                    rxChar.addEventListener(
-                        "characteristicvaluechanged",
-                        (event) => {
-                            const value = event.target.value;
-                            const decoder = new TextDecoder("utf-8");
-                            this.latestReceivedData = decoder.decode(value);
-                            console.log(
-                                "Nhận từ ESP32:",
-                                this.latestReceivedData,
-                            );
-                        },
-                    );
-                });
-            })
-            .then(() => {
-                console.log("Đã kết nối 2 chiều thành công!");
-            })
-            .catch((error) => {
-                console.error("Lỗi kết nối:", error);
-            });
-    }
-
-    sendData(args) {
-        if (!this.txCharacteristic) return;
-        const encoder = new TextEncoder();
-        const data = encoder.encode(args.TEXT);
-        return this.txCharacteristic.writeValue(data);
-    }
-
-    getReceivedData() {
-        return this.latestReceivedData; // Trả về giá trị cho khối tròn trong Scratch
+    doIt(args) {
+        const statement = Cast.toString(args.SCRIPT);
+        const func = new Function(`return (${statement})`);
+        console.log(`doIt: ${statement}`);
+        return func.call(this);
     }
 }
 
-export default Scratch3STEMEdatalogger;
-
-//Scratch.extensions.register(new Scratch3STEMEdatalogger());
+export {
+    StemeDataloggerBlocks as default,
+    StemeDataloggerBlocks as stemeDataloggerClass,
+};

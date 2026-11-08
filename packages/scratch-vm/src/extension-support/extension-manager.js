@@ -25,7 +25,7 @@ const builtinExtensions = {
     boost: () => require("../extensions/scratch3_boost"),
     gdxfor: () => require("../extensions/scratch3_gdx_for"),
     faceSensing: () => require("../extensions/scratch3_face_sensing"),
-    stemeDatalogger: () => require("../extensions/scratch3_steme_datalogger"),
+    stemeDataloggerID: () => require("../extensions/scratch3_steme_datalogger"),
 };
 
 /**

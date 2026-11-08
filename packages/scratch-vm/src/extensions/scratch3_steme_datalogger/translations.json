@@ -1,0 +1,14 @@
+{
+    "en": {
+        "stemeDataloggerID.name": "stemeDataloggerID",
+        "stemeDataloggerID.doIt": "do it [SCRIPT]"
+    },
+    "ja": {
+        "stemeDataloggerID.name": "stemeDataloggerID",
+        "stemeDataloggerID.doIt": "[SCRIPT] を実行する"
+    },
+    "ja-Hira": {
+        "stemeDataloggerID.name": "stemeDataloggerID",
+        "stemeDataloggerID.doIt": "[SCRIPT] をじっこうする"
+    }
+}
