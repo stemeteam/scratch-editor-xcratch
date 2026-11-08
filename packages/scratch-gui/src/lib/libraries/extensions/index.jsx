@@ -65,8 +65,8 @@ const extensions = [
         description: (
             <FormattedMessage
                 defaultMessage="Connect your projects with the world."
-                description="Description for the 'micro:bit' extension"
-                id="gui.extension.microbit.description"
+                description="Description for the 'steme datalogger' extension"
+                id="gui.extension.stemedatalogger.description"
             />
         ),
         tags: ["device", "hardware"],
@@ -78,6 +78,27 @@ const extensions = [
         useAutoScan: false,
         connectionIconURL: stemeDataloggerIconURL,
         connectionSmallIconURL: stemeDataloggerIconURL,
+        prescanMessage: (
+            <FormattedMessage
+                defaultMessage="Turn on your datalogger, then press the button below to start searching for your device."
+                description="Prompt before searching for a datalogger of steme"
+                id="gui.extension.stemedatalogger.prescanMessage"
+            />
+        ),
+        scanBeginMessage: (
+            <FormattedMessage
+                defaultMessage="Keep your datalogger on and nearby."
+                description="Information shown while searching for a datalogger, before one is found"
+                id="gui.extension.stemedatalogger.scanBeginMessage"
+            />
+        ),
+        connectingMessage: (
+            <FormattedMessage
+                defaultMessage="Connecting"
+                description="Message to help people connect to their datalogger."
+                id="gui.extension.stemedatalogger.connectingMessage"
+            />
+        ),
     },
     {
         name: (
